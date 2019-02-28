@@ -1,0 +1,14 @@
+$font-size: calc(1em + 0.5vw);
+$line-height: calc(1.1em + 0.15vh);
+$red: #f33;
+$green: #9f6;
+$yellow: #ff3;
+$blue: #36f;
+$black: #111;
+$light-gray: #ddd;
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}

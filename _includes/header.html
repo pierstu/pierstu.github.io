@@ -1,0 +1,13 @@
+    <nav class="site-nav row">
+		<div class="col">
+			<a href="{{ site.baseurl }}/">{{ site.title }}</a>
+		</div>
+        {% for page in site.pages %}
+			{% if page.title %}
+		<div class="col">
+			<a href="{{ page.url | prepend: site.baseurl }} " > {{ page.title }} </a> 
+		</div>
+			{% endif %}
+		{% endfor %}
+	<div class="col"><a href=" {{ "/feed.xml" | prepend: site.baseurl }} " target="_blank">rss</a></div>
+</nav>

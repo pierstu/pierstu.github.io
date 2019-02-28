@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="/css/rss.css" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pierstu</title>
+    <description>pierre s - ordinateurs, bricole, balises, logiciels libres, musique ou presque</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>2019-02-28 14:23:20 +0100</pubDate>
+    <lastBuildDate>2019-02-28 14:23:20 +0100</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>a start job is running by dev/disk</title>
+        <description>&lt;p&gt;C’est une partie du message que l’on peut lire au démarrage d’une session unix/linux où l’identifiant de la swap a été perdu, si vous n’utilisez pas LVM sur l’ensemble du disque. Il faut alors attendre deux minutes complètes jusqu’à la connexion, et ça semble toujours très long.&lt;/p&gt;
+
+&lt;p&gt;Il n’existe pas d’option pour ne pas formater la swap, et donc ne pas lui attribuer de nouvel UUID, dans une installation de Debian et dérivées.&lt;/p&gt;
+
+&lt;p&gt;Il existe une méthode relativement simple sous Debian pour retrouver, renommer et réajuster l’identifiant de la partition avant recompilation d’initramfs-tools. Tout se fait depuis le terminal et éventuellement, votre éditeur de texte.&lt;/p&gt;
+
+&lt;p&gt;Dans un premier temps, il faut trouver le nouvel UUID de votre swap. Entrez &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo blkid&lt;/code&gt; et lisez ce que retourne le terminal, jusqu’à apercevoir votre partition de swap.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;/dev/sda6: &lt;span class=&quot;nv&quot;&gt;UUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;47ebbb16-aa14-41df-a003-b483141bb5f7&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;TYPE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;swap&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;PARTUUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ed73b1e0-06&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;C’est la nouvelle UUID qui nous intéresse. Sélectionnez le contenu des guillemets et copiez-le.&lt;/p&gt;
+
+&lt;p&gt;Depuis le terminal, entrez &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo geany /etc/fstab&lt;/code&gt; en remplaçant &lt;code class=&quot;highlighter-rouge&quot;&gt;geany&lt;/code&gt; par votre éditeur de texte.&lt;/p&gt;
+
+&lt;p&gt;Dans les dernières lignes, remplacez l’ancien UUID par le nouveau, afin d’avoir quelque chose comme :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# swap was on /dev/sda6 during installation&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;UUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;47ebbb16-aa14-41df-a003-b483141bb5f7 none            swap    sw              0       0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sauvez et quittez. Entrez à présent &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo geany /etc/initramfs-tools/resume&lt;/code&gt; pour la même opération. Votre fichier fini ressemble à :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;RESUME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;UUID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;47ebbb16-aa14-41df-a003-b483141bb5f7&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Encore une saisie de &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo mkswap -U 47ebbb16-aa14-41df-a003-b483141bb5f7 /dev/sda6&lt;/code&gt; dans mon cas (remplacez évidemment les UUID et les lecteurs correspondants à votre installation). L’option &lt;code class=&quot;highlighter-rouge&quot;&gt;-U&lt;/code&gt; créé une swap en forçant l’UUID, et nécessite malgré tout le nom du lecteur.&lt;/p&gt;
+
+&lt;p&gt;Il ne reste qu’à compiler notre nouvelle configuration avec &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo update-initramfs -u -k $(uname -r)&lt;/code&gt; et redémarrer immédiatement.&lt;/p&gt;
+
+&lt;p&gt;La même démarche est à suivre sur l’ensemble de vos distributions présentes sur votre disque.&lt;/p&gt;
+</description>
+        <pubDate>2019-02-25 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/linux/2019/02/25/swap-startjob/</link>
+        <guid isPermaLink="true">http://localhost:4000/linux/2019/02/25/swap-startjob/</guid>
+        
+        
+        <category>linux</category>
+        
+      </item>
+    
+      <item>
+        <title>a propos de ce theme</title>
+        <description>&lt;p&gt;Ce thème est un bricolage très simple du &lt;a href=&quot;https://github.com/jekyll/minima&quot;&gt;thème de départ&lt;/a&gt; après avoir successivement:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;effacé une bonne partie des classes pour simplifier au plus possible des composants,&lt;/li&gt;
+  &lt;li&gt;utilisé le maximum de hacks pour rester le plus léger possible.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Le parti-pris esthétique (ou son absence) est en accord avec le moteur d’interprétation du Markdown: l’ensemble et un tas de blocs. Peut-être un contrepoint aux grandes tendances actuelles où tout tient dans une grille.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;/_sass/_layout.scss&lt;/code&gt; fait moins de 3.5 kB, en n’étant pas économe sur les retours et indentations!&lt;/p&gt;
+
+&lt;p&gt;La légèreté des ressources amène à une grande vitesse de compilation et de rendu. Pour avoir redécouvert le plaisir relatif de la navigation en mode texte pour du test, c’est une certaine satisfaction.&lt;/p&gt;
+
+&lt;p&gt;Par exemple, l’utilisation de &lt;code class=&quot;highlighter-rouge&quot;&gt;display: flex;&lt;/code&gt; n’arrive que deux fois, dont une pour une media query.&lt;/p&gt;
+
+&lt;p&gt;En empruntant à &lt;a href=&quot;https://ajusa.github.io/lit/&quot;&gt;lit.css&lt;/a&gt; le &lt;code class=&quot;highlighter-rouge&quot;&gt;display: table;&lt;/code&gt; au parent et &lt;code class=&quot;highlighter-rouge&quot;&gt;display: table-cell;&lt;/code&gt; aux enfants, il suffit d’appliquer &lt;code class=&quot;highlighter-rouge&quot;&gt;max-with: 100%;&lt;/code&gt; aux enfants pour reproduire l’équivalent du &lt;em&gt;navbar-brand&lt;/em&gt; : le premier enfant aura toute la largeur moins la somme de celle des autres enfants. Une autre méthode aurait été possible, mais celle-ci prend deux lignes et ne perturbe pas le reste de la maquette. Dans la même logique, pour les utilisateurs avec une petite largeur d’écran, les colonnes passent en &lt;code class=&quot;highlighter-rouge&quot;&gt;display: block;&lt;/code&gt; et s’empilent automatiquement.&lt;/p&gt;
+
+&lt;p&gt;Il suffit d’utiliser les nouveaux opérateurs de calcul de css pour que le rythme vertical suive le redimensionnement, et soit relativement lisible par la plupart des écrans au moment de passer les variables, avec &lt;code class=&quot;highlighter-rouge&quot;&gt;$font-size: calc(1em + 0.5vw);&lt;/code&gt; et &lt;code class=&quot;highlighter-rouge&quot;&gt;$line-height: calc(1.1em + 0.15vh);&lt;/code&gt;, et avec l’emploi des &lt;code class=&quot;highlighter-rouge&quot;&gt;vh&lt;/code&gt; et &lt;code class=&quot;highlighter-rouge&quot;&gt;vw&lt;/code&gt;, le contenu et sa structure s’organiseront automatiquement.&lt;/p&gt;
+
+&lt;p&gt;Reste à le rendre pleinement accessible et c’est bon.&lt;/p&gt;
+</description>
+        <pubDate>2019-02-24 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/jekyll/2019/02/24/apropos/</link>
+        <guid isPermaLink="true">http://localhost:4000/jekyll/2019/02/24/apropos/</guid>
+        
+        
+        <category>jekyll</category>
+        
+      </item>
+    
+      <item>
+        <title>Welcome to Jekyll!</title>
+        <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory - edit this post and re-build (or run with the &lt;code class=&quot;highlighter-rouge&quot;&gt;-w&lt;/code&gt; switch) to see your changes!
+To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention: YYYY-MM-DD-name-of-post.ext.&lt;/p&gt;
+
+&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;.&lt;/p&gt;
+
+</description>
+        <pubDate>2019-02-23 13:03:48 +0100</pubDate>
+        <link>http://localhost:4000/jekyll/update/2019/02/23/welcome-to-jekyll/</link>
+        <guid isPermaLink="true">http://localhost:4000/jekyll/update/2019/02/23/welcome-to-jekyll/</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>de l'usage d'un nc10</title>
+        <description>&lt;p&gt;Premier post écrit, et publié via jekyll sur un &lt;a href=&quot;https://en.wikipedia.org/wiki/Samsung_NC10&quot;&gt;samsung nc-10&lt;/a&gt; récupéré juste à temps, et qui se porte comme un charme.&lt;/p&gt;
+
+&lt;p&gt;On a beau faire de notre mieux, ces sales bêtes restent increvables. On peut exécuter des tâches simples en mode graphique, comme bricoler un préprocesseur de site.&lt;/p&gt;
+
+&lt;p&gt;Cet ordinateur, quoique peu véloce par rapport aux usages actuels sur une machine construite aujourd’hui pour le grand public, est encore pertinente dans l’usage d’applications simples.&lt;/p&gt;
+
+&lt;p&gt;Il démarre sans broncher depuis des distributions convenant à son âge respectable, basées sur Debian 9 (stretch) ou 10 (jessie), bien qu’il semble plus rapide à démarrer avec SysV qu’avec systemd. Le processeur accepte des instructions en SSE2, mais est restreint à des calculs en 32 bits, il faudra donc choisir une distribution pour &lt;a href=&quot;https://distrowatch.com/search.php?ostype=Linux&amp;amp;category=All&amp;amp;origin=All&amp;amp;basedon=All&amp;amp;notbasedon=None&amp;amp;desktop=All&amp;amp;architecture=i686&amp;amp;package=All&amp;amp;rolling=All&amp;amp;isosize=All&amp;amp;netinstall=All&amp;amp;language=All&amp;amp;defaultinit=All&amp;amp;status=Active#simple&quot;&gt;i686&lt;/a&gt; (i586 pour un mode de compatibilité absolue ou débug).&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lscpu&lt;/code&gt; retourne :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Architecture:          i686
+CPU op-mode&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:        32-bit
+Byte Order:            Little Endian
+CPU&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:                2
+On-line CPU&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; list:   0,1
+Thread&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; per core:    2
+Core&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; per socket:    1
+Socket&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:             1
+Vendor ID:             GenuineIntel
+CPU family:            6
+Model:                 28
+Model name:            Intel&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Atom&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;TM&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; CPU N270   @ 1.60GHz
+Stepping:              2
+CPU MHz:               800.000
+CPU max MHz:           1600,0000
+CPU min MHz:           800,0000
+BogoMIPS:              3192.29
+L1d cache:             24K
+L1i cache:             32K
+L2 cache:              512K&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;lscpi&lt;/code&gt; retourne :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;00:00.0 Host bridge: Intel Corporation Mobile 945GSE Express Memory Controller Hub &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 03&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:02.0 VGA compatible controller: Intel Corporation Mobile 945GSE Express Integrated Graphics Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 03&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:02.1 Display controller: Intel Corporation Mobile 945GM/GMS/GME, 943/940GML Express Integrated Graphics Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 03&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1b.0 Audio device: Intel Corporation NM10/ICH7 Family High Definition Audio Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1c.0 PCI bridge: Intel Corporation NM10/ICH7 Family PCI Express Port 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1c.2 PCI bridge: Intel Corporation NM10/ICH7 Family PCI Express Port 3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1d.0 USB controller: Intel Corporation NM10/ICH7 Family USB UHCI Controller &lt;span class=&quot;c&quot;&gt;#1 (rev 02)&lt;/span&gt;
+00:1d.1 USB controller: Intel Corporation NM10/ICH7 Family USB UHCI Controller &lt;span class=&quot;c&quot;&gt;#2 (rev 02)&lt;/span&gt;
+00:1d.2 USB controller: Intel Corporation NM10/ICH7 Family USB UHCI Controller &lt;span class=&quot;c&quot;&gt;#3 (rev 02)&lt;/span&gt;
+00:1d.3 USB controller: Intel Corporation NM10/ICH7 Family USB UHCI Controller &lt;span class=&quot;c&quot;&gt;#4 (rev 02)&lt;/span&gt;
+00:1d.7 USB controller: Intel Corporation NM10/ICH7 Family USB2 EHCI Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1e.0 PCI bridge: Intel Corporation 82801 Mobile PCI Bridge &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev e2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1f.0 ISA bridge: Intel Corporation 82801GBM &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ICH7-M&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; LPC Interface Bridge &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1f.2 IDE interface: Intel Corporation 82801GBM/GHM &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ICH7-M Family&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; SATA Controller &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;IDE mode] &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+00:1f.3 SMBus: Intel Corporation NM10/ICH7 Family SMBus Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 02&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+02:00.0 Ethernet controller: Qualcomm Atheros AR242x / AR542x Wireless Network Adapter &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;PCI-Express&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 01&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+03:00.0 Ethernet controller: Marvell Technology Group Ltd. 88E8040 PCI-E Fast Ethernet Controller &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;rev 13&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;La bonne nouvelle, c’est que tout ça a été bidouillé depuis longtemps, et des mises à jour sur apt vont combler d’éventuels vides.&lt;/p&gt;
+
+&lt;p&gt;La contrepartie, c’est que beaucoup d’applications récentes ne sont plus écrites pour i686 (ou x86). 
+Dans le meilleur des cas, les applications que nous voulons sont disponibles dans les dépôts, dans le cas intermédiaire on peut les compiler, et dans le pire des cas on ne peut rien y faire.&lt;/p&gt;
+
+&lt;p&gt;Il n’y a qu’un emplacement pour la ram, on peut y mettre jusqu’à 2gb en ddr2.&lt;/p&gt;
+
+&lt;p&gt;Le paquet &lt;a href=&quot;https://launchpad.net/samsung-tools&quot;&gt;samsung-tools&lt;/a&gt; est utile pour avoir un accès direct aux paramètres matériels depuis le terminal.&lt;/p&gt;
+
+&lt;p&gt;J’ai l’intention de m’en servir pour en faire de la musique, autant que possible avec des logiciels libres, ce processus tentera d’être documenté dans ces pages.&lt;/p&gt;
+</description>
+        <pubDate>2019-02-23 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/linux/nc10/2019/02/23/nc10/</link>
+        <guid isPermaLink="true">http://localhost:4000/linux/nc10/2019/02/23/nc10/</guid>
+        
+        
+        <category>linux</category>
+        
+        <category>nc10</category>
+        
+      </item>
+    
+  </channel>
+</rss>
