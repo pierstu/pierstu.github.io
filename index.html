@@ -1,0 +1,58 @@
+---
+layout: default
+---
+
+<div class="home">
+
+  <div class="row">
+	  <div class="col">
+  <h2><span>{% include icon-archive.svg %}</span> archive</h2>
+		  <ul>
+		{% for post in site.posts %}
+			<li>
+			<span>{{ post.date | date: "%Y-%m-%-d" }}</span>
+			<a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+			</li>
+		{% endfor %}
+		</ul>
+		</div>
+	</div>
+	<div class="row">
+		<div clas="col">
+			<h3><span>{% include icon-record.svg %}</span >publications</h3>
+			<ul>
+				{% assign sorted = (site.publications | sort: 'date') | reverse %}
+			{% for publication in sorted %}
+			<li>
+			<span>{{publication.date | date: "%Y-%m-%-d" }} </span><a target="_blank" href="{{ publication.link }}">{{publication.title}}</a> <small>{{publication.label}}</small></p>
+			</li>
+			{% endfor %}
+			</ul>
+		</div>
+
+		<div class="col col_dates">
+			<h3><span>{% include icon-calendar.svg %}</span> dates</h3>
+			<ul>
+        {% assign sorted = (site.dates | sort: 'date') | reverse %}
+        {% for date in sorted %}
+
+
+        {% assign today_date = 'now' | date: '%s' %}
+        {% assign pre_date = sorted.date | date: '%s' %}
+        {% if today_date < pre_date %}
+			<li class="futuredate">
+				<span>{{date.date | date: "%Y-%m-%-d"}}</span>
+			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
+			</li>
+				{% else %}
+			<li>
+				<span>{{date.date | date: "%Y-%m-%-d"}} </span>
+			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
+			</li>
+			{% endif %}
+			{% endfor %}
+			</ul>
+		</div>
+
+	</div>
+</div>

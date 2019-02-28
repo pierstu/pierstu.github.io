@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>a start job is running by dev/disk</title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="pierre s - ordinateurs, bricole, balises, logiciels libres, musique ou presque">
+    <link rel="canonical" href="http://localhost:4000/linux/2019/02/25/swap-startjob/">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+
+</head>
+
+	<body>
+		<div class="container">
+		    <nav class="site-nav row">
+		<div class="col">
+			<a href="/">pierstu</a>
+		</div>
+        
+			
+		
+			
+		<div class="col">
+			<a href="/contact/ " > contact </a> 
+		</div>
+			
+		
+			
+		
+			
+		
+			
+		
+			
+		
+	<div class="col"><a href=" /feed.xml " target="_blank">rss</a></div>
+</nav>
+
+			<div class="page-content">
+			<h2>a start job is running by dev/disk</h2>
+	<time>2019-02-25</time>
+  <p>C’est une partie du message que l’on peut lire au démarrage d’une session unix/linux où l’identifiant de la swap a été perdu, si vous n’utilisez pas LVM sur l’ensemble du disque. Il faut alors attendre deux minutes complètes jusqu’à la connexion, et ça semble toujours très long.</p>
+
+<p>Il n’existe pas d’option pour ne pas formater la swap, et donc ne pas lui attribuer de nouvel UUID, dans une installation de Debian et dérivées.</p>
+
+<p>Il existe une méthode relativement simple sous Debian pour retrouver, renommer et réajuster l’identifiant de la partition avant recompilation d’initramfs-tools. Tout se fait depuis le terminal et éventuellement, votre éditeur de texte.</p>
+
+<p>Dans un premier temps, il faut trouver le nouvel UUID de votre swap. Entrez <code class="highlighter-rouge">sudo blkid</code> et lisez ce que retourne le terminal, jusqu’à apercevoir votre partition de swap.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">/dev/sda6: <span class="nv">UUID</span><span class="o">=</span><span class="s2">"47ebbb16-aa14-41df-a003-b483141bb5f7"</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">"swap"</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">"ed73b1e0-06"</span></code></pre></figure>
+
+<p>C’est la nouvelle UUID qui nous intéresse. Sélectionnez le contenu des guillemets et copiez-le.</p>
+
+<p>Depuis le terminal, entrez <code class="highlighter-rouge">sudo geany /etc/fstab</code> en remplaçant <code class="highlighter-rouge">geany</code> par votre éditeur de texte.</p>
+
+<p>Dans les dernières lignes, remplacez l’ancien UUID par le nouveau, afin d’avoir quelque chose comme :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># swap was on /dev/sda6 during installation</span>
+<span class="nv">UUID</span><span class="o">=</span>47ebbb16-aa14-41df-a003-b483141bb5f7 none            swap    sw              0       0</code></pre></figure>
+
+<p>Sauvez et quittez. Entrez à présent <code class="highlighter-rouge">sudo geany /etc/initramfs-tools/resume</code> pour la même opération. Votre fichier fini ressemble à :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">RESUME</span><span class="o">=</span><span class="nv">UUID</span><span class="o">=</span>47ebbb16-aa14-41df-a003-b483141bb5f7</code></pre></figure>
+
+<p>Encore une saisie de <code class="highlighter-rouge">sudo mkswap -U 47ebbb16-aa14-41df-a003-b483141bb5f7 /dev/sda6</code> dans mon cas (remplacez évidemment les UUID et les lecteurs correspondants à votre installation). L’option <code class="highlighter-rouge">-U</code> créé une swap en forçant l’UUID, et nécessite malgré tout le nom du lecteur.</p>
+
+<p>Il ne reste qu’à compiler notre nouvelle configuration avec <code class="highlighter-rouge">sudo update-initramfs -u -k $(uname -r)</code> et redémarrer immédiatement.</p>
+
+<p>La même démarche est à suivre sur l’ensemble de vos distributions présentes sur votre disque.</p>
+
+
+			</div>
+		<footer>
+	<div class="row">
+		<div class="col">
+			<h2>pierstu | <a href=" /feed.xml " target="_blank"><svg viewBox="0 0 32 32">
+<path d="M3.84 3.84v3.787c11.338 0 20.528 9.194 20.528 20.531h3.79c0-13.43-10.888-24.318-24.318-24.318zM3.84 11.419v3.79c7.15 0 12.949 5.797 12.949 12.95h3.789c0-9.245-7.494-16.741-16.738-16.741zM7.47 20.894c-2.006 0-3.632 1.629-3.632 3.634s1.626 3.632 3.632 3.632 3.63-1.626 3.63-3.632-1.624-3.634-3.63-3.634z"></path>
+</svg>
+rss</a></h2>
+			<small>pierre s - ordinateurs, bricole, balises, logiciels libres, musique ou presque</small> 
+		</div>
+	</div>
+<div class="row">
+    <div class="col">
+		<p>social :</p>
+      <ul>
+        <li>
+          <a href="https://github.com/pierstu">
+			<span><svg viewBox="0 0 32 32">
+<path d="M16 0.396c-8.84 0-16 7.164-16 16 0 7.071 4.584 13.067 10.94 15.18 0.8 0.151 1.093-0.344 1.093-0.769 0-0.38-0.013-1.387-0.020-2.72-4.451 0.965-5.389-2.147-5.389-2.147-0.728-1.847-1.78-2.34-1.78-2.34-1.449-0.992 0.112-0.972 0.112-0.972 1.607 0.112 2.451 1.648 2.451 1.648 1.427 2.447 3.745 1.74 4.66 1.331 0.144-1.035 0.556-1.74 1.013-2.14-3.553-0.4-7.288-1.776-7.288-7.907 0-1.747 0.62-3.173 1.647-4.293-0.18-0.404-0.72-2.031 0.14-4.235 0 0 1.34-0.429 4.4 1.64 1.28-0.356 2.64-0.532 4-0.54 1.36 0.008 2.72 0.184 4 0.54 3.040-2.069 4.38-1.64 4.38-1.64 0.86 2.204 0.32 3.831 0.16 4.235 1.020 1.12 1.64 2.547 1.64 4.293 0 6.147-3.74 7.5-7.3 7.893 0.56 0.48 1.080 1.461 1.080 2.96 0 2.141-0.020 3.861-0.020 4.381 0 0.42 0.28 0.92 1.1 0.76 6.401-2.099 10.981-8.099 10.981-15.159 0-8.836-7.164-16-16-16z"></path>
+</svg>
+</span>
+			github
+          </a>
+        </li>
+        <li>
+          <a href="https://framasphere.org/people/969b27d0ce230132a6d72a0000053625">
+			<span><svg viewBox="0 0 32 32"><path d="M20.347 29.195l-3.109-4.341c-0.829-1.16-1.503-2.063-1.539-2.063s-1.341 1.752-3.088 4.151c-1.664 2.285-3.040 4.152-3.060 4.152-0.044 0-5.997-4.192-6.013-4.236-0.008-0.021 1.34-1.997 2.989-4.391 1.653-2.393 3.005-4.387 3.005-4.435 0-0.073-0.544-0.257-4.743-1.66l-4.789-1.599c-0.040-0.024 0.208-0.853 1.057-3.533 0.613-1.928 1.125-3.52 1.14-3.54 0.019-0.021 2.28 0.699 5.029 1.607 2.751 0.907 5.020 1.645 5.051 1.645 0.029 0 0.061-0.040 0.071-0.093 0.013-0.040 0.040-2.381 0.053-5.2 0.027-2.8 0.053-5.12 0.067-5.16 0.027-0.040 0.8-0.040 3.64-0.040 1.979 0 3.617 0.020 3.644 0.040 0.033 0.021 0.087 1.581 0.181 5.040 0.147 5.7 0.147 5.78 0.24 5.78 0.033 0 2.213-0.72 4.84-1.627 2.631-0.88 4.789-1.6 4.807-1.581 0.040 0.059 2.2 7.080 2.18 7.1-0.023 0.021-2.223 0.78-4.88 1.68-3.68 1.24-4.863 1.66-4.863 1.72-0.019 0.040 1.24 1.94 2.861 4.28 1.579 2.32 2.857 4.22 2.857 4.24-0.020 0.061-5.92 4.403-5.977 4.403-0.020 0-0.78-1.021-1.66-2.26l0.007-0.089z"></path></svg>
+</span>
+            diaspora
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col">
+      <p>d'autres projets :</p>
+      <ul>
+		<li><a href="https://www.mixcloud.com/cheloutonson/stream/" target="_blank"><span><svg viewBox="0 0 32 32"><path d="M29.267 25.416c-0.205 0-0.413-0.060-0.593-0.18-0.492-0.333-0.62-1-0.3-1.48 0.984-1.459 1.5-3.175 1.5-4.959s-0.516-3.5-1.5-4.961c-0.332-0.491-0.193-1.155 0.288-1.475 0.5-0.332 1.16-0.195 1.477 0.285 1.223 1.82 1.861 3.96 1.861 6.16 0 2.197-0.639 4.339-1.861 6.159-0.18 0.319-0.52 0.479-0.86 0.479l-0.012-0.028z"></path><path d="M26.213 23.691c-0.204 0-0.411-0.060-0.593-0.185-0.492-0.319-0.617-0.979-0.287-1.459 0.652-0.961 0.996-2.060 0.996-3.24 0-1.14-0.344-2.26-0.996-3.241-0.331-0.48-0.205-1.139 0.287-1.46s1.143-0.2 1.475 0.3c0.892 1.32 1.361 2.86 1.361 4.419 0 1.601-0.469 3.12-1.361 4.42-0.195 0.32-0.541 0.48-0.881 0.48v-0.033zM21.24 14.153c-0.419-4.263-4.021-7.599-8.4-7.599-3.628 0-6.84 2.331-7.993 5.711-2.729 0.403-4.847 2.76-4.847 5.601 0 3.125 2.549 5.672 5.68 5.672h14.544c2.619 0 4.755-2.125 4.755-4.743 0-2.275-1.6-4.172-3.74-4.64v-0.003zM20.224 21.415h-14.54c-1.955 0-3.559-1.588-3.559-3.544 0-1.953 1.591-3.544 3.559-3.544 0.947 0 1.841 0.38 2.515 1.041 0.4 0.419 1.081 0.419 1.5 0 0.4-0.401 0.4-1.081 0-1.5-0.74-0.723-1.641-1.241-2.62-1.481 1-2.22 3.24-3.699 5.74-3.699 3.479 0 6.32 2.839 6.32 6.317 0 0.683-0.1 1.341-0.32 1.981-0.18 0.56 0.12 1.159 0.68 1.36 0.099 0.040 0.22 0.060 0.32 0.060 0.44 0 0.86-0.281 1-0.72 0.14-0.42 0.24-0.84 0.3-1.28 0.979 0.38 1.68 1.34 1.68 2.44 0 1.461-1.18 2.639-2.62 2.639l0.045-0.071z"></path></svg>
+</span> chelou ton son</a></li>
+		<li><a href="https://gitlab.com/pierstu/yoshimi-patches" target="_blank"><span><svg viewBox="0 0 32 32"><path d="M31.94 18.116l-1.789-5.513-3.552-10.919c-0.18-0.564-0.973-0.564-1.156 0l-3.552 10.916h-11.781l-3.551-10.916c-0.181-0.564-0.979-0.564-1.159-0.004l-3.552 10.919-1.789 5.517c-0.161 0.5 0.019 1.052 0.441 1.364l15.5 11.259 15.5-11.257c0.424-0.313 0.604-0.863 0.44-1.365z"></path></svg>
+</span> patches pour yoshimi</a><small> (en cours)</small></li>
+		<!-- <li>Lien</li> -->
+	</ul>
+    </div>
+
+  </div>
+
+</footer>
+
+		</div>
+	</body>
+</html>

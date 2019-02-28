@@ -1,0 +1,38 @@
+<footer>
+	<div class="row">
+		<div class="col">
+			<h2>{{ site.title }} | <a href=" {{ "/feed.xml" | prepend: site.baseurl }} " target="_blank">{% include icon-rss.svg %}rss</a></h2>
+			<small>{{site.description}}</small> 
+		</div>
+	</div>
+<div class="row">
+    <div class="col">
+		<p>social :</p>
+      <ul>
+        {% if site.github_username %}<li>
+          <a href="https://github.com/{{ site.github_username }}">
+			<span>{% include icon-github.svg %}</span>
+			github
+          </a>
+        </li>{% endif %}
+        {% if site.diaspora_username %}<li>
+          <a href="https://framasphere.org/people/969b27d0ce230132a6d72a0000053625">
+			<span>{% include icon-diaspora.svg %}</span>
+            diaspora
+          </a>
+        </li>{% endif %}
+      </ul>
+    </div>
+
+    <div class="col">
+      <p>d'autres projets :</p>
+      <ul>
+		<li><a href="https://www.mixcloud.com/cheloutonson/stream/" target="_blank"><span>{% include icon-mixcloud.svg %}</span> chelou ton son</a></li>
+		<li><a href="https://gitlab.com/pierstu/yoshimi-patches" target="_blank"><span>{% include icon-gitlab.svg %}</span> patches pour yoshimi</a><small> (en cours)</small></li>
+		<!-- <li>Lien</li> -->
+	</ul>
+    </div>
+
+  </div>
+
+</footer>

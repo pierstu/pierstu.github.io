@@ -1,0 +1,21 @@
+rss {
+	display: block;
+	font-family: monospace;
+
+}
+
+title{
+	display: block;
+	margin: calc(1.1vh + 0.5em) auto;
+
+}
+
+item {
+	display: block;
+	padding: .5em 1em;
+}
+
+link {
+	display: block;
+	margin: 2em;
+}
