@@ -4,8 +4,8 @@ email: pierre.studievic@pm.me
 description: "pierre s - balises, logiciels libres, synth diy ..."
 baseurl: ""
 url: "http://pierstu.github.io"
-# diaspora_username: pierstu
-# github_username:  pierstu
+diaspora_username: pierstu 
+github_username:  pierstu
 
 # Collections
 collections: 
