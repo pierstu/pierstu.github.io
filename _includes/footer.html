@@ -23,6 +23,12 @@
             diaspora
           </a>
         </li>{% endif %}
+	{% if site.mastodon.username %}<li>
+	   <a href="https://merveilles.town/@{{ site.mastodon.username }}">
+		   	<span>{% include icon-mastodon.svg %}</span>
+	mastodon
+	   </a>
+	</li>{% endif %}
       </ul>
     </div>
 
