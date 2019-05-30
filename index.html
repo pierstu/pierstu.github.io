@@ -24,7 +24,7 @@ layout: default
 				{% assign sorted = (site.publications | sort: 'date') | reverse %}
 			{% for publication in sorted %}
 			<li>
-			<span>{{publication.date | date: "%Y-%m-%-d" }} </span><a target="_blank" href="{{ publication.link }}">{{publication.title}}</a> {% if label.with %}<small>{{publication.label}}</small>{% endif %}</p>
+			<span>{{publication.date | date: "%Y-%m-%-d" }} </span><a target="_blank" href="{{ publication.link }}">{{publication.title}}</a> {% if label.with %}<small>{{publication.label}}</small>{% else %}{% endif %}</p>
 			</li>
 			{% endfor %}
 			</ul>
