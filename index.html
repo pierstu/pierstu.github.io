@@ -35,8 +35,8 @@ layout: default
 			<ul>
         {% assign sorted = (site.dates | sort: 'date') | reverse %}
         {% for date in sorted %}
-		{% capture nowunix %}{{ site.date | date: '%Y-%m-%-d'}}{% endcapture %}
-		{% capture datetime %}{{ sorted.date | date: '%Y-%m-%-d'}}{% endcapture %}
+		{% capture nowunix %}{{ site.date | date: '%s'}}{% endcapture %}
+		{% capture datetime %}{{ sorted.date | date: '%s'}}{% endcapture %}
 		{% if datetime < nowunix %}
 			<li class="futuredate">
 				<span>{{date.date | date: "%Y-%m-%-d"}}</span>
