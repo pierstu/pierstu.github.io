@@ -48,7 +48,7 @@ layout: default
 			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
 			</li>
 				{% else %}
-			<li>
+			<li class="datepassee">
 				<span>{{date.date | date: "%Y-%m-%-d"}} </span>
 			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
 			</li>
