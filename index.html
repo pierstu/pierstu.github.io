@@ -37,9 +37,12 @@ layout: default
         {% for date in sorted %}
 
 
-        {% assign today_date = 'now' | date: '%s' %}
+       <!-- {% assign today_date = 'now' | date: '%s' %}
         {% assign pre_date = sorted.date | date: '%s' %}
-        {% if today_date < pre_date %}
+        {% if today_date < pre_date %} -->
+		{% capture nowunix %}{{ 'now' | date: '%s'}}{% endcapture %}
+		{% capture datetime %}{{ site.date | date: '%s'}}{% endcapture %}
+		{% if datetime < nowunix %}
 			<li class="futuredate">
 				<span>{{date.date | date: "%Y-%m-%-d"}}</span>
 			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
