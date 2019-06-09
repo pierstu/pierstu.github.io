@@ -38,8 +38,8 @@ layout: default
        <!-- {% assign today_date = 'now' | date: '%s' %}
         {% assign pre_date = sorted.date | date: '%s' %}
         {% if today_date < pre_date %} -->
-		{% capture nowunix %}{{ 'now' | date: '%s'}}{% endcapture %}
-		{% capture datetime %}{{ date.date | date: '%s'}}{% endcapture %}
+		{% capture nowunix %}{{ site.date | date: '%Y-%m-%-d'}}{% endcapture %}
+		{% capture datetime %}{{ sorted.date | date: '%Y-%m-%-d'}}{% endcapture %}
 		{% if datetime < nowunix %}
 			<li class="futuredate">
 				<span>{{date.date | date: "%Y-%m-%-d"}}</span>
