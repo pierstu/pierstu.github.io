@@ -35,8 +35,6 @@ layout: default
 			<ul>
         {% assign sorted = (site.dates | sort: 'date') | reverse %}
         {% for date in sorted %}
-
-
        <!-- {% assign today_date = 'now' | date: '%s' %}
         {% assign pre_date = sorted.date | date: '%s' %}
         {% if today_date < pre_date %} -->
@@ -52,8 +50,8 @@ layout: default
 				<span>{{date.date | date: "%Y-%m-%-d"}} </span>
 			{% if date.with %}<small>(avec <b>{{date.with}}</b>) : </small>{% endif %} <b>{{date.title}}</b> <small>{{date.place}}</small>
 			</li>
-			{% endif %}
-			{% endfor %}
+		{% endif %}
+	{% endfor %}
 			</ul>
 		</div>
 
