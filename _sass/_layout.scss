@@ -7,8 +7,12 @@ body {
 	margin: 0 auto;
 	font-size: $font-size;
 	line-height: $line-height;
-	background-color: $black;
-	color: $light-gray;
+	background: #303030 url(../assets/img/a.svg);
+  	color: white;
+   	background-repeat: no-repeat;
+  	background-attachment: fixed;
+  	background-position: center; 
+  	background-size: 132vw;
 	font-family: monospace;
 }
 
@@ -76,9 +80,6 @@ a:visited:hover{
 .col_dates ul {
 	max-height: 75vh; 
 	overflow-y: auto;
-	border: 0.125em solid lighten($black,10%);
-	background-color: lighten($black, 5%);
-	border-width: 0.0625em 0em 0.0625em 0.125em;
 }
 .futuredate {color: $green;}
 
